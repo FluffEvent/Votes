@@ -56,7 +56,7 @@ function updateGraph()
 							}
 
 							graphData.push({
-								name: `Tour ${color}`,
+								name: `Choix ${color}`,
 								type: 'bar',
 								x: x,
 								y: y,
