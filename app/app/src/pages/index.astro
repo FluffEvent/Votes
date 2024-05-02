@@ -1,3 +1,9 @@
+---
+import '~/assets/style.css'
+import plotlyjs from 'plotly.js/dist/plotly.min.js?url'
+import scriptjs from '~/assets/script.js?url'
+---
+
 <html>
 <head>
 
@@ -10,8 +16,9 @@
 
 	<link rel="stylesheet" href="style.css" type="text/css" media="all" />
 
-	<script src="https://cdn.plot.ly/plotly-2.20.0.min.js" charset="utf-8" defer></script>
-	<script src="script.js" defer></script>
+	<script src={plotlyjs} defer></script>
+	<script src={scriptjs} defer></script>
+
 
 </head>
 <body>
