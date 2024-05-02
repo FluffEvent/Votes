@@ -37,7 +37,7 @@ import plotlyjs from 'plotly.js/dist/plotly.min.js?url'
 	</main>
 
 	<footer>
-		<div>© 2023 - <a href="https://fluffevent.fr/">Fluff Event</a></div>
+		<div>© 2023-2024 - <a href="https://fluffevent.fr/">Fluff Event</a></div>
 		<div><a href="https://github.com/FluffEvent/Votes">Open Source</a></div>
 		<!-- <div>Site réalisé par <a href="https://matiboux.me/">Matiboux</a></div> -->
 	</footer>
@@ -57,7 +57,7 @@ function updateGraph()
 		return
 	}
 
-	fetch(`data/2024/df_data.json`)
+	fetch(`/data/2024/df_data.json`)
 		.then(response => response.json())
 		.then(data =>
 			{
