@@ -1,0 +1,382 @@
+---
+import plotlyjs from 'plotly.js/dist/plotly.min.js?url'
+---
+
+<html>
+<head>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Votes Fluff Event</title>
+
+	<link rel="icon" href="https://fluffevent.fr/wp-content/uploads/2022/12/cropped-FluffEveent-logo-onglet-contour-192x192.png" sizes="192x192" />
+	<link rel="apple-touch-icon" href="https://fluffevent.fr/wp-content/uploads/2022/12/cropped-FluffEveent-logo-onglet-contour-180x180.png" />
+
+	<link rel="stylesheet" href="style.css" type="text/css" media="all" />
+
+	<script src={plotlyjs} defer></script>
+
+</head>
+<body>
+
+	<header>
+		<img src="https://fluffevent.fr/img/logo_white.svg" class="logo" alt="Logo Fluff Event" />
+		<h1>Votes Fluff Event</h1>
+	</header>
+
+	<main>
+
+		<div>
+			<div>
+				Résultats des votes (<span id="nb_votes">…</span> votes comptabilisés)
+			</div>
+
+			<div>
+				Système de vote mis en œuvre : <a href="https://fr.wikipedia.org/wiki/Vote_%C3%A0_second_tour_instantan%C3%A9">Vote alternatif</a> (<a href="https://en.wikipedia.org/wiki/Instant-runoff_voting">en</a>)
+			</div>
+
+			<form id="form" action="#">
+				<label for="input_style">Style</label>
+				<div id="input_style">
+					<div style="display: inline-block">
+						<input type="radio" name="style" value="scores" id="input_style_scores" />
+						<label for="input_style_scores">Scores</label>
+					</div>
+
+					<div style="display: inline-block">
+						<input type="radio" name="style" value="votes" id="input_style_votes" checked />
+						<label for="input_style_votes">Votes</label>
+					</div>
+				</div>
+
+				<label for="input_tour">Tour</label>
+				<div id="input_tour">
+					<div style="display: inline-block">
+						<input type="radio" name="tour" value="1" id="input_tour_1" />
+						<label for="input_tour_1">Tour 1</label>
+					</div>
+
+					<div style="display: inline-block">
+						<input type="radio" name="tour" value="2" id="input_tour_2" />
+						<label for="input_tour_2">Tour 2</label>
+					</div>
+
+					<div style="display: inline-block">
+						<input type="radio" name="tour" value="3" id="input_tour_3" />
+						<label for="input_tour_3">Tour 3</label>
+					</div>
+
+					<div style="display: inline-block">
+						<input type="radio" name="tour" value="4" id="input_tour_4" />
+						<label for="input_tour_4">Tour 4</label>
+					</div>
+
+					<div style="display: inline-block">
+						<input type="radio" name="tour" value="5" id="input_tour_5" />
+						<label for="input_tour_5">Tour 5</label>
+					</div>
+
+					<div style="display: inline-block">
+						<input type="radio" name="tour" value="6" id="input_tour_6" />
+						<label for="input_tour_6">Tour 6</label>
+					</div>
+
+					<div style="display: inline-block">
+						<input type="radio" name="tour" value="7" id="input_tour_7" checked />
+						<label for="input_tour_7">Tour 7</label>
+					</div>
+				</div>
+			</form>
+
+			<div id="graph"></div>
+		</div>
+
+	</main>
+
+	<footer>
+		<div>© 2023 - <a href="https://fluffevent.fr/">Fluff Event</a></div>
+		<div><a href="https://github.com/FluffEvent/Votes">Open Source</a></div>
+		<!-- <div>Site réalisé par <a href="https://matiboux.me/">Matiboux</a></div> -->
+	</footer>
+
+</body>
+</html>
+
+<script>
+declare const Plotly: any
+
+const form = document.getElementById('form') as HTMLFormElement | null
+const inputs = document.querySelectorAll('input')
+
+if (!form || !inputs)
+{
+	throw new Error('Form or inputs not found')
+}
+
+function updateGraph()
+{
+	if (!form)
+	{
+		return
+	}
+
+	const graph = document.getElementById('graph')
+	const nbVotesElement = document.getElementById('nb_votes')
+	if (!graph || !nbVotesElement)
+	{
+		return
+	}
+
+	const formData = new FormData(form)
+
+	let style = (formData.get('style') as string | null) || ''
+	let tour = (formData.get('tour') as string | null) || ''
+
+	if (!['scores', 'votes'].includes(style))
+	{
+		style = 'scores'
+	}
+
+	if (!['1', '2', '3', '4', '5', '6', '7'].includes(tour))
+	{
+		tour = '1'
+	}
+
+	fetch(`data/2023/df_${style}_${tour}.json`)
+		.then(response => response.json())
+		.then(data =>
+			{
+				const length = Object.values(data['vote']).length
+				const graphData: {
+					name: string,
+					type: string,
+					x: string[] | number[],
+					y: number[],
+				}[] = []
+
+				let nbVotes = 0
+
+				if ('color' in data)
+				{
+					const colors = [...new Set(Object.values(data['color']))]
+					colors.forEach(color =>
+						{
+							const x = []
+							const y = []
+
+							for (let i = 0; i < length; ++i)
+							{
+								if (data['color'][i] !== color)
+								{
+									continue
+								}
+
+								x.push(data['vote'][i])
+								y.push(data['score'][i])
+
+								nbVotes += data['score'][i]
+							}
+
+							graphData.push({
+								name: `Choix ${color}`,
+								type: 'bar',
+								x: x,
+								y: y,
+							})
+						})
+				}
+				else
+				{
+					const votes = [
+						'Abbé Pierre',
+						'AIDES',
+						'HelpSimus',
+						'L214',
+						'Noé',
+						'SurfRider',
+						'Wings Of The Ocean',
+					]
+					votes.forEach(vote =>
+						{
+							const x = []
+							const y = []
+
+							for (let i = 0; i < length; ++i)
+							{
+								if (data['vote'][i] !== vote)
+								{
+									continue
+								}
+
+								x.push(vote)
+								y.push(data['score'][i])
+
+								nbVotes += data['score'][i]
+							}
+
+							graphData.push({
+								name: vote,
+								type: 'bar',
+								x: x,
+								y: y,
+							})
+						})
+				}
+
+				nbVotesElement.innerText = nbVotes.toString()
+
+				Plotly.newPlot(graph, graphData,
+					{
+						barmode: 'stack',
+						showlegend: true,
+						margin: { t: 0, },
+					})
+			})
+}
+
+form.addEventListener('submit', event =>
+	{
+		event.preventDefault()
+		updateGraph()
+	})
+
+inputs.forEach(input =>
+	input.addEventListener('change', _ =>
+		updateGraph()))
+
+document.addEventListener('DOMContentLoaded', () =>
+	{
+		updateGraph()
+	})
+
+window.addEventListener('resize', () =>
+	{
+		updateGraph()
+	})
+</script>
+
+<style lang="scss">
+html, body {
+	position: relative;
+	width: 100%;
+	min-width: 100%;
+	height: 100%;
+	min-height: 100%;
+}
+
+body {
+	background: #fff;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	margin: 0;
+	padding: 0;
+	font-family: 'Open Sans', sans-serif;
+	color: #fff;
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+a {
+	color: inherit;
+}
+
+header {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #e6386bc0;
+	width: 100%;
+	height: 200px;
+	box-sizing: content-box;
+	padding: 20px;
+    flex-grow: 0;
+	flex-shrink: 0;
+
+	> * {
+		flex-grow: 0;
+		margin-right: 50px;
+	}
+
+	> *:last-child {
+		margin-right: 0;
+	}
+
+	> .logo {
+		width: 200px;
+		height: 200px;
+	}
+
+	> h1 {
+		font-size: 42px;
+		font-weight: 300;
+	}
+}
+
+main {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background: linear-gradient(180deg, #e6386bc0 0%, #9d29a5c0 100%);
+	width: 100%;
+	padding: 20px;
+	flex-grow: 1;
+
+	> div {
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		width: 100%;
+		max-width: 1440px;
+		height: 100%;
+		box-sizing: content-box;
+		padding: 0 20px;
+
+		> #graph {
+			background: #fff;
+			min-height: 300px;
+			max-height: 600px;
+			box-sizing: content-box;
+			padding: 20px;
+			flex-grow: 1;
+		}
+	}
+}
+
+footer {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #9d29a5c0;
+	width: 100%;
+	height: 40px;
+	box-sizing: content-box;
+	padding: 20px;
+	flex-grow: 0;
+	flex-shrink: 0;
+}
+
+footer > * {
+	flex-grow: 0;
+	margin-right: 30px;
+}
+
+footer > *:last-child {
+	margin-right: 0;
+}
+
+@media screen and (max-height: 719.98px) {
+	header {
+		height: 120px;
+	}
+
+	header > .logo {
+		height: 120px;
+	}
+
+	main > div {
+		max-width: 1080px;
+	}
+}
+</style>
