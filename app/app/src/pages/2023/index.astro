@@ -103,22 +103,34 @@ import plotlyjs from 'plotly.js/dist/plotly.min.js?url'
 </html>
 
 <script>
-const form = document.getElementById('form')
+declare const Plotly: any
+
+const form = document.getElementById('form') as HTMLFormElement | null
 const inputs = document.querySelectorAll('input')
+
+if (!form || !inputs)
+{
+	throw new Error('Form or inputs not found')
+}
 
 function updateGraph()
 {
+	if (!form)
+	{
+		return
+	}
+
 	const graph = document.getElementById('graph')
 	const nbVotesElement = document.getElementById('nb_votes')
-	if (!graph)
+	if (!graph || !nbVotesElement)
 	{
 		return
 	}
 
 	const formData = new FormData(form)
 
-	let style = formData.get('style')
-	let tour = formData.get('tour')
+	let style = (formData.get('style') as string | null) || ''
+	let tour = (formData.get('tour') as string | null) || ''
 
 	if (!['scores', 'votes'].includes(style))
 	{
@@ -135,7 +147,12 @@ function updateGraph()
 		.then(data =>
 			{
 				const length = Object.values(data['vote']).length
-				const graphData = []
+				const graphData: {
+					name: string,
+					type: string,
+					x: string[] | number[],
+					y: number[],
+				}[] = []
 
 				let nbVotes = 0
 
@@ -206,7 +223,7 @@ function updateGraph()
 						})
 				}
 
-				nbVotesElement.innerText = nbVotes
+				nbVotesElement.innerText = nbVotes.toString()
 
 				Plotly.newPlot(graph, graphData,
 					{
