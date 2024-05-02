@@ -82,23 +82,22 @@ function updateGraph()
 
 				for (let i = 0; i < charities.length; ++i)
 				{
-					if (nbVotes < data['total'][i])
+					const charityIndex = i * charities.length
+					if (nbVotes < data['total'][charityIndex])
 					{
-						nbVotes = data['total'][i]
+						nbVotes = data['total'][charityIndex]!
 					}
 
 					line_x.push(charities[i]!)
-					line_y.push(data['half'][i])
+					line_y.push(data['half'][charityIndex]!)
 
 					const bar_x: string[] = []
 					const bar_y: number[] = []
 
 					for (let j = i; data['charity'].hasOwnProperty(j); j += charities.length)
 					{
-						console.log(j, data['charity'][j])
-
-						bar_x.push(data['charity'][j])
-						bar_y.push(data['count'][j])
+						bar_x.push(data['charity'][j]!)
+						bar_y.push(data['count'][j]!)
 					}
 
 					graphData.push({
@@ -113,7 +112,7 @@ function updateGraph()
 					x: line_x,
 					y: line_y,
 					type: 'line',
-					name: 'median',
+					name: 'Votes median',
 					line: { color: 'black' },
 				})
 
