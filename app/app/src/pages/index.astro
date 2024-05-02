@@ -106,21 +106,20 @@ import scriptjs from '~/assets/script.js?url'
 </html>
 
 <style lang="scss">
-html {
+html, body {
 	position: relative;
+	width: 100%;
 	min-width: 100%;
+	height: 100%;
 	min-height: 100%;
 }
 
 body {
-	position: relative;
 	background: #fff;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	min-width: 100%;
-	min-height: 100%;
 	margin: 0;
 	padding: 0;
 	font-family: 'Open Sans', sans-serif;
@@ -140,27 +139,29 @@ header {
 	background: #e6386bc0;
 	width: 100%;
 	height: 200px;
+	box-sizing: content-box;
 	padding: 20px;
     flex-grow: 0;
 	flex-shrink: 0;
-}
 
-header > * {
-	flex-grow: 0;
-	margin-right: 50px;
-}
+	> * {
+		flex-grow: 0;
+		margin-right: 50px;
+	}
 
-header > *:last-child {
-	margin-right: 0;
-}
+	> *:last-child {
+		margin-right: 0;
+	}
 
-header > .logo {
-	height: 200px;
-}
+	> .logo {
+		width: 200px;
+		height: 200px;
+	}
 
-header > h1 {
-	font-size: 42px;
-	font-weight: 300;
+	> h1 {
+		font-size: 42px;
+		font-weight: 300;
+	}
 }
 
 main {
@@ -171,24 +172,26 @@ main {
 	width: 100%;
 	padding: 20px;
 	flex-grow: 1;
-}
 
-main > div {
-	display: flex;
-	flex-direction: column;
-	align-items: stretch;
-	width: 100%;
-	max-width: 1440px;
-	height: 100%;
-	padding: 0 20px;
-}
+	> div {
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		width: 100%;
+		max-width: 1440px;
+		height: 100%;
+		box-sizing: content-box;
+		padding: 0 20px;
 
-main > div > #graph {
-	background: #fff;
-	min-height: 300px;
-	max-height: 600px;
-	padding: 20px;
-	flex-grow: 1;
+		> #graph {
+			background: #fff;
+			min-height: 300px;
+			max-height: 600px;
+			box-sizing: content-box;
+			padding: 20px;
+			flex-grow: 1;
+		}
+	}
 }
 
 footer {
@@ -198,6 +201,7 @@ footer {
 	background: #9d29a5c0;
 	width: 100%;
 	height: 40px;
+	box-sizing: content-box;
 	padding: 20px;
 	flex-grow: 0;
 	flex-shrink: 0;
