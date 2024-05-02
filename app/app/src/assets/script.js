@@ -25,7 +25,7 @@ function updateGraph()
 		tour = '1'
 	}
 
-	fetch(`data/df_${style}_${tour}.json`)
+	fetch(`data/2023/df_${style}_${tour}.json`)
 		.then(response => response.json())
 		.then(data =>
 			{
