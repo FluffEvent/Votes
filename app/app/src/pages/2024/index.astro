@@ -50,8 +50,8 @@ declare const Plotly: any
 
 function updateGraph()
 {
-	const graph = document.getElementById('graph')
-	const nbVotesElement = document.getElementById('nb_votes')
+	const graph = document.getElementById('graph') as (HTMLDivElement & { on: CallableFunction }) | null
+	const nbVotesElement = document.getElementById('nb_votes') as HTMLSpanElement | null
 	if (!graph || !nbVotesElement)
 	{
 		return
@@ -104,7 +104,8 @@ function updateGraph()
 						x: bar_x,
 						y: bar_y,
 						type: 'bar',
-						name: charities[i]!,
+						legendgroup: 'votes',
+						name: `Choix ${i + 1}`,
 					})
 				}
 
@@ -112,6 +113,7 @@ function updateGraph()
 					x: line_x,
 					y: line_y,
 					type: 'line',
+					legendgroup: 'median',
 					name: 'Votes median',
 					line: { color: 'black' },
 				})
@@ -126,6 +128,7 @@ function updateGraph()
 						showlegend: true,
 						margin: { t: 0, },
 					})
+				graph.on('plotly_legendclick', function() { return false; })
 			})
 }
 
