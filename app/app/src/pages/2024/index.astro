@@ -1,0 +1,267 @@
+---
+import plotlyjs from 'plotly.js/dist/plotly.min.js?url'
+---
+
+<html>
+<head>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Votes Fluff Event 2024</title>
+
+	<link rel="icon" href="https://fluffevent.fr/wp-content/uploads/2022/12/cropped-FluffEveent-logo-onglet-contour-192x192.png" sizes="192x192" />
+	<link rel="apple-touch-icon" href="https://fluffevent.fr/wp-content/uploads/2022/12/cropped-FluffEveent-logo-onglet-contour-180x180.png" />
+
+	<link rel="stylesheet" href="style.css" type="text/css" media="all" />
+
+	<script src={plotlyjs} defer></script>
+
+</head>
+<body>
+
+	<header>
+		<img src="https://fluffevent.fr/img/logo_white.svg" class="logo" alt="Logo Fluff Event" />
+		<h1>Votes Fluff Event 2024</h1>
+	</header>
+
+	<main>
+
+		<div>
+			<div>
+				Résultats des votes (<span id="nb_votes">…</span> votes comptabilisés)
+			</div>
+
+			<div id="graph"></div>
+		</div>
+
+	</main>
+
+	<footer>
+		<div>© 2023 - <a href="https://fluffevent.fr/">Fluff Event</a></div>
+		<div><a href="https://github.com/FluffEvent/Votes">Open Source</a></div>
+		<!-- <div>Site réalisé par <a href="https://matiboux.me/">Matiboux</a></div> -->
+	</footer>
+
+</body>
+</html>
+
+<script>
+declare const Plotly: any
+
+function updateGraph()
+{
+	const graph = document.getElementById('graph')
+	const nbVotesElement = document.getElementById('nb_votes')
+	if (!graph || !nbVotesElement)
+	{
+		return
+	}
+
+	fetch(`data/2024/df_data.json`)
+		.then(response => response.json())
+		.then(data =>
+			{
+				console.log(data)
+
+				// const length = Object.values(data['charity']).length
+				const graphData: {
+					name: string,
+					type: string,
+					x: string[],
+					y: number[],
+					[key: string]: any,
+				}[] = []
+
+				const charities: string[] = [...new Set(Object.values(data['charity'] as string))]
+				console.log(charities, charities.length)
+
+				let nbVotes = 0
+
+				const line_x: string[] = []
+				const line_y: number[] = []
+
+				for (let i = 0; i < charities.length; ++i)
+				{
+					const charityIndex = i * charities.length
+					if (nbVotes < data['total'][charityIndex])
+					{
+						nbVotes = data['total'][charityIndex]!
+					}
+
+					line_x.push(charities[i]!)
+					line_y.push(data['half'][charityIndex]!)
+
+					const bar_x: string[] = []
+					const bar_y: number[] = []
+
+					for (let j = i; data['charity'].hasOwnProperty(j); j += charities.length)
+					{
+						bar_x.push(data['charity'][j]!)
+						bar_y.push(data['count'][j]!)
+					}
+
+					graphData.push({
+						x: bar_x,
+						y: bar_y,
+						type: 'bar',
+						name: charities[i]!,
+					})
+				}
+
+				graphData.push({
+					x: line_x,
+					y: line_y,
+					type: 'line',
+					name: 'Votes median',
+					line: { color: 'black' },
+				})
+
+				console.log(graphData)
+
+				nbVotesElement.innerText = nbVotes.toString()
+
+				Plotly.newPlot(graph, graphData,
+					{
+						barmode: 'stack',
+						showlegend: true,
+						margin: { t: 0, },
+					})
+			})
+}
+
+document.addEventListener('DOMContentLoaded', () =>
+	{
+		updateGraph()
+	})
+
+window.addEventListener('resize', () =>
+	{
+		updateGraph()
+	})
+</script>
+
+<style lang="scss">
+html, body {
+	position: relative;
+	width: 100%;
+	min-width: 100%;
+	height: 100%;
+	min-height: 100%;
+}
+
+body {
+	background: #fff;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	margin: 0;
+	padding: 0;
+	font-family: 'Open Sans', sans-serif;
+	color: #fff;
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+a {
+	color: inherit;
+}
+
+header {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #e6386bc0;
+	width: 100%;
+	height: 200px;
+	box-sizing: content-box;
+	padding: 20px;
+    flex-grow: 0;
+	flex-shrink: 0;
+
+	> * {
+		flex-grow: 0;
+		margin-right: 50px;
+	}
+
+	> *:last-child {
+		margin-right: 0;
+	}
+
+	> .logo {
+		width: 200px;
+		height: 200px;
+	}
+
+	> h1 {
+		font-size: 42px;
+		font-weight: 300;
+	}
+}
+
+main {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background: linear-gradient(180deg, #e6386bc0 0%, #9d29a5c0 100%);
+	width: 100%;
+	padding: 20px;
+	flex-grow: 1;
+
+	> div {
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		width: 100%;
+		max-width: 1440px;
+		height: 100%;
+		box-sizing: content-box;
+		padding: 0 20px;
+
+		> #graph {
+			background: #fff;
+			min-height: 300px;
+			max-height: 600px;
+			box-sizing: content-box;
+			padding: 20px;
+			flex-grow: 1;
+		}
+	}
+}
+
+footer {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #9d29a5c0;
+	width: 100%;
+	height: 40px;
+	box-sizing: content-box;
+	padding: 20px;
+	flex-grow: 0;
+	flex-shrink: 0;
+}
+
+footer > * {
+	flex-grow: 0;
+	margin-right: 30px;
+}
+
+footer > *:last-child {
+	margin-right: 0;
+}
+
+@media screen and (max-height: 719.98px) {
+	header {
+		height: 120px;
+	}
+
+	header > .logo {
+		height: 120px;
+	}
+
+	main > div {
+		max-width: 1080px;
+	}
+}
+</style>
