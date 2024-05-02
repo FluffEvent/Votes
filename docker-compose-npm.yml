@@ -1,7 +1,4 @@
-version: '3.4'
-
 # Services definition for running npm commands
-
 services:
 
   npm:

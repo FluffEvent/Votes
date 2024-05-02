@@ -1,7 +1,4 @@
-version: '3.4'
-
 # Services definition override for CI/CD
-
 services:
 
   app:
