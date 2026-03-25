@@ -24,10 +24,10 @@ export interface Site
 
 export const site: Site = {
 	lang: 'fr',
-	title: 'Astro Template',
+	title: 'Fluff Event Votes',
 	description: {
-		'en': 'Template project for an Astro web application',
-		'fr': 'Modèle de projet pour une application web Astro',
+		'fr': 'Tableau de bord pour les votes du Fluff Event',
+		'en': 'Dashboard for the Fluff Event votes',
 	},
 	version: GITHUB_SHA || VERSION_TAG || 'dev',
 	author: 'Matiboux',
