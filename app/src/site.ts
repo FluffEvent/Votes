@@ -1,3 +1,5 @@
+import { GITHUB_REPOSITORY_URL, GITHUB_SHA, VERSION_TAG } from 'astro:env/client'
+
 import type { Props as BaseProps } from '~/layouts/Base.astro'
 
 export interface Site
@@ -5,6 +7,7 @@ export interface Site
 	lang?: BaseProps['lang']
 	title?: BaseProps['title']
 	description?: BaseProps['description']
+	version?: BaseProps['version']
 	author?: BaseProps['author']
 	keywords?: BaseProps['keywords']
 	generator?: BaseProps['generator']
@@ -22,9 +25,19 @@ export interface Site
 export const site: Site = {
 	lang: 'fr',
 	title: 'Astro Template',
+	description: {
+		'en': 'Template project for an Astro web application',
+		'fr': 'Modèle de projet pour une application web Astro',
+	},
+	version: GITHUB_SHA || VERSION_TAG || 'dev',
 	author: 'Matiboux',
 	themeColor: '#ffffff',
 	viewportScale: 1,
 	socialTitle: true,
 	socialDescription: true,
 }
+
+export const githubRepositoryUrl: string = (
+	GITHUB_REPOSITORY_URL
+	|| 'https://github.com/FluffEvent/Votes'
+)
