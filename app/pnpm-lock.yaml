@@ -23,7 +23,7 @@ importers:
         specifier: ^0.9.8
         version: 0.9.8(prettier@3.8.1)(typescript@5.9.3)
       '@fontsource-variable/inter':
-        specifier: ^5.2.0
+        specifier: ^5.2.8
         version: 5.2.8
       '@iconify-json/mdi':
         specifier: ^1.2.3
