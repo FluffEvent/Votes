@@ -127,6 +127,8 @@ function updateGraph()
 						barmode: 'stack',
 						showlegend: true,
 						margin: { t: 0, },
+						yaxis: { autorange: 'reversed' },
+						legend: { traceorder: 'normal' },
 					})
 				graph.on('plotly_legendclick', function() { return false; })
 			})
