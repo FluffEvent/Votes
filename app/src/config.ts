@@ -17,10 +17,10 @@ export const i18nLocales = [
 		codes: ['fr', 'fr_FR'],
 		path: 'fr',
 	},
-	// {
-	// 	codes: ['en', 'en_US'],
-	// 	path: 'en',
-	// },
+	{
+		codes: ['en', 'en_US'],
+		path: 'en',
+	},
 ] as const satisfies I18nConfig['locales']
 
 export const i18nDefaultLocale = i18nLocales[0].path
@@ -29,7 +29,7 @@ export const i18n = {
 	locales: i18nLocales,
 	defaultLocale: i18nDefaultLocale,
 	fallback: {
-		// en: 'fr',
+		en: 'fr',
 	},
 	localeKeys: {
 		// fr,
