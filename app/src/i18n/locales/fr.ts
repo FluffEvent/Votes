@@ -1,13 +1,14 @@
-import type { Diff } from '~/i18n/types.d.ts'
+import { localeKeys } from './keys'
+import type { DefaultLocaleType } from './types.d.ts'
 
-import type { DefaultLocaleKeys } from './types.d.ts'
+// Default locale uses keys as both keys and values
+const locale = localeKeys
+	.reduce<DefaultLocaleType>((acc, key) =>
+		{
+			(acc as any)[key] = key
+			return acc
+		},
+		{} as DefaultLocaleType,
+	)
 
-const locale = {
-	'Welcome!': 'Bienvenue !',
-} as const
-
-export default locale satisfies
-	// Static type check for missing keys
-	Readonly<Record<Diff<DefaultLocaleKeys, keyof typeof locale>, string>> &
-	// Static type check for extra keys
-	Readonly<Record<Diff<keyof typeof locale, DefaultLocaleKeys>, never>>
+export default locale
