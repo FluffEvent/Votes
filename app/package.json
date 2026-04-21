@@ -32,7 +32,7 @@
     "@iconify-json/twemoji": "^1.2.5",
     "@iconify/tailwind4": "^1.2.3",
     "@tailwindcss/vite": "^4.2.2",
-    "astro": "^6.0.8",
+    "astro": "^6.1.6",
     "plotly.js": "^2.35.3",
     "sass": "^1.98.0",
     "tailwindcss": "^4.2.2",
